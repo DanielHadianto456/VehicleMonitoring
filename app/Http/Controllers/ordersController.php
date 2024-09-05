@@ -8,6 +8,7 @@ use App\Models\ordersModel;
 use App\Models\driverModel;
 use App\Models\vehicleModel;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ordersController extends Controller
 {
@@ -105,21 +106,29 @@ class ordersController extends Controller
     //Function used to approve order as admin
     public function adminConsentApprove($id)
     {
-        //searches selected order based on id to approve
-        $update = ordersModel::where('id_order', $id)->update([
-            'admin_consent' => 'approved'
-        ]);
+        //searches current user based on auth
+        $user = Auth::user();
 
-        //Calls a method to update driver and vehicle status 
-        //based on the approval status from both parties
-        $this->updateDriverAndVehicleStatus($id);
+        //checks if user is an admin
+        if ($user->role == 'admin') {
+            //searches selected order based on id to approve
+            $approve = ordersModel::where('id_order', $id)->update([
+                'admin_consent' => 'approved'
+            ]);
 
-        //returns a message upon successful approval
-        //else an error message will be shown
-        if ($update) {
-            return response()->json(['status' => true, 'message' => 'Success']);
+            //Calls a method to update driver and vehicle status 
+            //based on the approval status from both parties
+            $this->updateDriverAndVehicleStatus($id);
+
+            //returns a message upon successful approval
+            //else an error message will be shown
+            if ($approve) {
+                return response()->json(['status' => true, 'message' => 'Success']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Failed to update']);
+            }
         } else {
-            return response()->json(['status' => false, 'message' => 'Failed to update']);
+            return response()->json(['status' => false, 'message' => 'Unauthorized']);
         }
 
     }
@@ -127,59 +136,90 @@ class ordersController extends Controller
     //Function used to approve order as approver
     public function approverConsentApprove($id)
     {
-        //searches selected order based on id to approve
-        $approve = ordersModel::where('id_order', $id)->update([
-            'approver_consent' => 'approved'
-        ]);
+        //searches current user based on auth
+        $user = Auth::user();
 
-        //Calls a method to update driver and vehicle status 
-        //based on the approval status from both parties
-        $this->updateDriverAndVehicleStatus($id);
+        //checks if user is an approver
+        if ($user->role == 'approver') {
+            //searches selected order based on id to approve
+            $approve = ordersModel::where('id_order', $id)->update([
+                'approver_consent' => 'approved'
+            ]);
 
-        //returns a message upon successful approval
-        //else an error message will be shown
-        if ($approve) {
-            return response()->json(['status' => true, 'message' => 'Success']);
+            //Calls a method to update driver and vehicle status 
+            //based on the approval status from both parties
+            $this->updateDriverAndVehicleStatus($id);
+
+            //returns a message upon successful approval
+            //else an error message will be shown
+            if ($approve) {
+                return response()->json(['status' => true, 'message' => 'Success']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Failed to update']);
+            }
         } else {
-            return response()->json(['status' => false, 'message' => 'Failed to update']);
+            return response()->json(['status' => false, 'message' => 'Unauthorized']);
         }
     }
 
     //Function used to disapprove order as admin
     public function adminConsentDisapprove($id)
     {
-        //searches selected order based on id to approve
-        $update = ordersModel::where('id_order', $id)->update([
-            'admin_consent' => 'disapproved'
-        ]);
 
-        $this->updateDriverAndVehicleStatus($id);
+        //searches current user based on auth
+        $user = Auth::user();
 
-        //returns a message upon successful approval
-        //else an error message will be shown
-        if ($update) {
-            return response()->json(['status' => true, 'message' => 'Success']);
+        //checks if user is an admin
+        if ($user->role == 'admin') {
+            //searches selected order based on id to approve
+            $update = ordersModel::where('id_order', $id)->update([
+                'admin_consent' => 'disapproved'
+            ]);
+
+            //Calls a method to update driver and vehicle status 
+            //based on the approval status from both parties
+            $this->updateDriverAndVehicleStatus($id);
+
+            //returns a message upon successful approval
+            //else an error message will be shown
+            if ($update) {
+                return response()->json(['status' => true, 'message' => 'Success']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Failed to update']);
+            }
         } else {
-            return response()->json(['status' => false, 'message' => 'Failed to update']);
+            return response()->json(['status' => false, 'message' => 'Unauthorized']);
         }
+
+
     }
 
     //Function used to approve order as approver
     public function approverConsentDisapprove($id)
     {
-        //searches selected order based on id to approve
-        $update = ordersModel::where('id_order', $id)->update([
-            'approver_consent' => 'disapproved'
-        ]);
+        //searches current user based on auth
+        $user = Auth::user();
 
-        $this->updateDriverAndVehicleStatus($id);
+        //checks if user is an approver
+        if ($user->role == 'approver') {
+            //searches selected order based on id to approve
+            $update = ordersModel::where('id_order', $id)->update([
+                'approver_consent' => 'disapproved'
+            ]);
 
-        //returns a message upon successful approval
-        //else an error message will be shown
-        if ($update) {
-            return response()->json(['status' => true, 'message' => 'Success']);
+            //Calls a method to update driver and vehicle status 
+            //based on the approval status from both parties
+            $this->updateDriverAndVehicleStatus($id);
+
+            //returns a message upon successful approval
+            //else an error message will be shown
+            if ($update) {
+                return response()->json(['status' => true, 'message' => 'Success']);
+            } else {
+                return response()->json(['status' => false, 'message' => 'Failed to update']);
+            }
         } else {
-            return response()->json(['status' => false, 'message' => 'Failed to update']);
+            return response()->json(['status' => false, 'message' => 'Unauthorized']);
         }
     }
 
@@ -200,7 +240,7 @@ class ordersController extends Controller
 
         //Deletes order data
         $delete = $order->delete();
-        
+
         //returns a message upon successful approval
         //else an error message will be shown
         if ($delete) {
@@ -243,7 +283,6 @@ class ordersController extends Controller
             // Assigns vehicle and driver if both parties approve
             $vehicle->status = 'assigned';
             $driver->status = 'assigned';
-            echo ($adminConsent . ' ' . $approverConsent);
         } elseif ($adminConsent == 'disapproved' && $approverConsent == 'disapproved') {
             // Unassigns vehicle and driver if there's a dissaproval
             $vehicle->status = 'unassigned';
