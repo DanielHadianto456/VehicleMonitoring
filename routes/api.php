@@ -6,6 +6,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\vehicleController;
 use App\Http\Controllers\driverController;
 use App\Http\Controllers\ordersController;
+use App\Http\Controllers\detailOrderController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -24,6 +25,7 @@ Route::middleware('auth:userModel')->group(function () {
         Route::post('logout', 'logout');
         Route::get('getAllUser', 'getAllUser');
     });
+
     Route::controller(vehicleController::class)->group(function () {
         Route::get('getVehicle', 'getVehicle');
         Route::get('getVehicleId/{id}', 'getVehicleId');
@@ -32,6 +34,7 @@ Route::middleware('auth:userModel')->group(function () {
         Route::patch('unassignVehicle/{id}', 'unassignVehicle');
         Route::delete('deleteVehicle/{id}', 'deleteVehicle');
     });
+
     Route::controller(driverController::class)->group(function () {
         Route::get('getDriver', 'getDriver');
         Route::get('getDriverId/{id}', 'getDriverId');
@@ -41,6 +44,7 @@ Route::middleware('auth:userModel')->group(function () {
         Route::patch('unassignDriver/{id}', 'unAssignDriver');
         Route::delete('deleteDriver/{id}', 'deleteDriver');
     });
+
     Route::controller(ordersController::class)->group(function () {
         Route::get('getOrder', 'getOrder');
         Route::get('getOrderId/{id}', 'getOrderId');
@@ -51,5 +55,13 @@ Route::middleware('auth:userModel')->group(function () {
         Route::patch('adminConsentDisapprove/{id}', 'adminConsentDisapprove');
         Route::patch('approverConsentDisapprove/{id}', 'approverConsentDisapprove');
         Route::delete('deleteOrder/{id}', 'deleteOrder');
+    });
+
+    Route::controller(detailOrderController::class)->group(function () {
+        Route::get('getDetail', 'getDetail');
+        Route::get('getDetailId/{id}', 'getDetailId');
+        Route::get('getDetailIdOrder/{id}', 'getDetailIdOrder');
+        Route::post('addDetail', 'addDetail');
+        Route::patch('finishOrder/{id}', 'finishOrder');
     });
 });
