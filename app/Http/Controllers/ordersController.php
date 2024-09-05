@@ -16,7 +16,7 @@ class ordersController extends Controller
     public function getOrder()
     {
         //Joins data from 3 tables
-        $order = ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails'])->get();
+        $order = ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails', 'orderDetails'])->get();
         return response()->json($order);
     }
 
@@ -24,7 +24,7 @@ class ordersController extends Controller
     public function getOrderId($id)
     {
         //Joins data from 3 tables
-        $order = ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails'])->find($id);
+        $order = ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails', 'orderDetails'])->find($id);
         return response()->json($order);
     }
 

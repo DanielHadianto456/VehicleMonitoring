@@ -35,4 +35,8 @@ class ordersModel extends Model
     public function approverDetails(){
         return $this->belongsTo(userModel::class, 'id_user', 'id_user');
     }
+
+    public function orderDetails(){
+        return $this->hasMany(detailOrderModel::class, 'id_order', 'id_order');
+    }
 }
