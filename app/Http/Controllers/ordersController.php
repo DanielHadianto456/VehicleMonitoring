@@ -9,6 +9,8 @@ use App\Models\driverModel;
 use App\Models\vehicleModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrdersExport;
 
 class ordersController extends Controller
 {
@@ -363,5 +365,10 @@ class ordersController extends Controller
         $vehicle->save();
         $driver->save();
 
+    }
+
+    public function exportOrdersToExcel()
+    {
+        return Excel::download(new OrdersExport, 'orders.xlsx');
     }
 }
