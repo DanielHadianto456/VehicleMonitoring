@@ -20,6 +20,14 @@ class ordersController extends Controller
         return response()->json($order);
     }
 
+    //Function used to get a specific order data based on id
+    public function getOrderId($id)
+    {
+        //Joins data from 3 tables
+        $order = ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails'])->find($id);
+        return response()->json($order);
+    }
+
     //Function used to add new order
     public function addOrder(Request $req)
     {

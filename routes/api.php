@@ -26,6 +26,7 @@ Route::middleware('auth:userModel')->group(function () {
     });
     Route::controller(vehicleController::class)->group(function () {
         Route::get('getVehicle', 'getVehicle');
+        Route::get('getVehicleId/{id}', 'getVehicleId');
         Route::post('addVehicle', 'addVehicle');
         Route::patch('updateVehicle/{id}', 'updateVehicle');
         Route::patch('unassignVehicle/{id}', 'unassignVehicle');
@@ -33,6 +34,7 @@ Route::middleware('auth:userModel')->group(function () {
     });
     Route::controller(driverController::class)->group(function () {
         Route::get('getDriver', 'getDriver');
+        Route::get('getDriverId/{id}', 'getDriverId');
         Route::post('addDriver', 'addDriver');
         Route::patch('updateDriver/{id}', 'updateDriver');
         Route::patch('assignDriver/{id}', 'assignDriver');
@@ -41,6 +43,7 @@ Route::middleware('auth:userModel')->group(function () {
     });
     Route::controller(ordersController::class)->group(function () {
         Route::get('getOrder', 'getOrder');
+        Route::get('getOrderId/{id}', 'getOrderId');
         Route::post('addOrder', 'addOrder');
         Route::patch('updateOrder/{id}', 'updateOrder');
         Route::patch('adminConsentApprove/{id}', 'adminConsentApprove');

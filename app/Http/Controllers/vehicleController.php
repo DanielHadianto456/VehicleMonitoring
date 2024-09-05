@@ -16,6 +16,12 @@ class vehicleController extends Controller
         return response()->json($order);
     }
 
+    //Function used to get specific vehicle data based on id
+    public function getVehicleId($id){
+        $vehicle = vehicleModel::find($id);
+        return response()->json($vehicle);
+    }
+
     //Function used to add new vehicle
     public function addVehicle(Request $req)
     {   
