@@ -7,6 +7,8 @@ use App\Http\Controllers\vehicleController;
 use App\Http\Controllers\driverController;
 use App\Http\Controllers\ordersController;
 use App\Http\Controllers\detailOrderController;
+use App\Exports\OrdersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -55,6 +57,7 @@ Route::middleware('auth:userModel')->group(function () {
         Route::patch('adminConsentDisapprove/{id}', 'adminConsentDisapprove');
         Route::patch('approverConsentDisapprove/{id}', 'approverConsentDisapprove');
         Route::delete('deleteOrder/{id}', 'deleteOrder');
+        // Route::get('export-orders', 'exportOrdersToExcel');
     });
 
     Route::controller(detailOrderController::class)->group(function () {
@@ -64,4 +67,10 @@ Route::middleware('auth:userModel')->group(function () {
         Route::post('addDetail', 'addDetail');
         Route::patch('finishOrder/{id}', 'finishOrder');
     });
+
+});
+// Route::get('export-orders', [ordersController::class, 'exportOrdersToExcel']);
+
+Route::get('export-orders', function () {
+    return Excel::download(new OrdersExport, 'orders.xlsx');
 });
