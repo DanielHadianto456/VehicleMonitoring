@@ -15,6 +15,12 @@ class driverController extends Controller
         return response()->json($order);
     }
 
+    //Function used to get specific driver data based on id
+    public function getDriverId($id){
+        $vehicle = driverModel::find($id);
+        return response()->json($vehicle);
+    }
+
     //Function used to add new driver
     public function addDriver(Request $req)
     {   
