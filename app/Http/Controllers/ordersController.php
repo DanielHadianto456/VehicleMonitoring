@@ -16,7 +16,12 @@ class ordersController extends Controller
     public function getOrder()
     {
         //Joins data from 3 tables
-        $order = ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails', 'orderDetails'])->get();
+        $order = ordersModel::with([
+            'driverDetails',
+            'vehicleDetails',
+            'approverDetails',
+            'orderDetails'
+        ])->get();
         return response()->json($order);
     }
 
@@ -24,7 +29,12 @@ class ordersController extends Controller
     public function getOrderId($id)
     {
         //Joins data from 3 tables
-        $order = ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails', 'orderDetails'])->find($id);
+        $order = ordersModel::with([
+            'driverDetails',
+            'vehicleDetails',
+            'approverDetails',
+            'orderDetails'
+        ])->find($id);
         return response()->json($order);
     }
 
@@ -94,31 +104,60 @@ class ordersController extends Controller
         $user = Auth::user();
 
         if ($user->role == 'admin') {
-            //Checks if input is correct or not
-            $validator = Validator::make($req->all(), [
-                'id_driver' => 'required',
-                'id_vehicle' => 'required',
-                'id_user' => 'required',
-            ]);
 
-            //If not, then an error message will be shown
-            if ($validator->fails()) {
-                return response()->json($validator->errors()->toJson());
-            }
-
-            //If input is correct, then the data will be updated
-            $update = ordersModel::where('id_order', $id)->update([
-                'id_driver' => $req->get('id_driver'),
-                'id_vehicle' => $req->get('id_vehicle'),
-                'id_user' => $req->get('id_user'),
-            ]);
-
-            //If data is saved, then a success message will be shown
-            //else an error message will be shown
-            if ($update) {
-                return response()->json(['status' => true, 'message' => 'Success']);
+            //Checks if selected driver or vehicles are currently assigned
+            $vehicle = vehicleModel::find($req->get('id_vehicle'));
+            $driver = driverModel::find($req->get('id_driver'));
+            
+            if ($vehicle->status != 'unassigned' || $driver->status != 'unassigned') {
+                return response()->json(['status' => false, 'message' => 'Vehicle or Driver already assigned']);
             } else {
-                return response()->json(['status' => false, 'message' => 'Failed to update']);
+                //Retrieves selected order data based on primary key
+                $order = ordersModel::find($id);
+                
+                //Unassigns current driver and vehicle based on vehicle and driver
+                //id avaliable in the order data through primary key
+                vehicleModel::where('id_vehicle', $order->id_vehicle)->update([
+                    'status' => 'unassigned'
+                ]);
+                driverModel::where('id_driver', $order->id_driver)->update([
+                    'status' => 'unassigned'
+                ]);
+
+                //Checks if input is correct or not
+                $validator = Validator::make($req->all(), [
+                    'id_driver' => 'required',
+                    'id_vehicle' => 'required',
+                    'id_user' => 'required',
+                ]);
+
+                //If not, then an error message will be shown
+                if ($validator->fails()) {
+                    return response()->json($validator->errors()->toJson());
+                }
+
+                //If input is correct, then the data will be updated
+                $update = ordersModel::where('id_order', $id)->update([
+                    'id_driver' => $req->get('id_driver'),
+                    'id_vehicle' => $req->get('id_vehicle'),
+                    'id_user' => $req->get('id_user'),
+                ]);
+
+                //Gives pending status to vehicle and driver
+                vehicleModel::where('id_vehicle', $req->get('id_vehicle'))->update([
+                    'status' => 'pending'
+                ]);
+                driverModel::where('id_driver', $req->get('id_driver'))->update([
+                    'status' => 'pending'
+                ]);
+
+                //If data is saved, then a success message will be shown
+                //else an error message will be shown
+                if ($update) {
+                    return response()->json(['status' => true, 'message' => 'Success']);
+                } else {
+                    return response()->json(['status' => false, 'message' => 'Failed to update']);
+                }
             }
         } else {
             return response()->json(['status' => false, 'message' => 'Unauthorized']);
