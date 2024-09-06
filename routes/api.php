@@ -65,7 +65,7 @@ Route::middleware('auth:userModel')->group(function () {
         Route::get('getDetailId/{id}', 'getDetailId');
         Route::get('getDetailIdOrder/{id}', 'getDetailIdOrder');
         Route::post('addDetail', 'addDetail');
-        Route::patch('finishOrder/{id}', 'finishOrder');
+        // Route::patch('finishOrder/{id}', 'finishOrder');
     });
 
 });

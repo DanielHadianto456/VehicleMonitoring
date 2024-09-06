@@ -7,8 +7,10 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <x-nav-link :href="route('addDetailItem')"  style="color: rgb(0, 0, 0);">Make Reservation Detail</x-nav-link>
             <div class="bg-transparent overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
                     @foreach (App\Models\ordersModel::with(['driverDetails', 'vehicleDetails', 'approverDetails'])->get() as $item)
                         <div class="" style="padding: 1px">
                             <div
@@ -86,8 +88,6 @@
                                             @method('PATCH')
                                         </form>
                                     @endif
-                                @elseif($item->admin_consent === 'approved' && $item->approver_consent === 'approved')
-                                    <x-nav-link :href="route('detailItem', $item->id_order)"  style="color: white;">See Details</x-nav-link>
                                 @else
                                 @endif
                             </div>

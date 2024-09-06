@@ -9,17 +9,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('order.create') }}">
+                    <form method="POST" action="{{ route('return.vehicle') }}">
                         @csrf
 
                         <div class="grid grid-cols-3 gap-4">
                             <div>
-                                <input-label for="id_vehicle" :value="__('Select Vehicle')" />
-                                <select id="id_vehicle" name="id_vehicle" class="block mt-1 w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                                    @foreach (App\Models\vehicleModel::where('status', 'unassigned')->get() as $vehicle)
-                                        <option value="{{ $vehicle->id_vehicle }}">{{ $vehicle->license }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="fuel_usage">
                             </div>
                         </div>
 

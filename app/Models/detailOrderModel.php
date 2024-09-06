@@ -19,7 +19,6 @@ class detailOrderModel extends Model
         'id_order',
         'fuel_usage',
         'used_at',
-        'returned_at',
     ];
 
     public function orderDetails(){

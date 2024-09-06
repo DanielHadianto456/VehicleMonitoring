@@ -9,17 +9,21 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('order.create') }}">
+                    <form method="POST" action="{{ route('add.detail') }}">
                         @csrf
 
                         <div class="grid grid-cols-3 gap-4">
                             <div>
-                                <input-label for="id_vehicle" :value="__('Select Vehicle')" />
-                                <select id="id_vehicle" name="id_vehicle" class="block mt-1 w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                                    @foreach (App\Models\vehicleModel::where('status', 'unassigned')->get() as $vehicle)
-                                        <option value="{{ $vehicle->id_vehicle }}">{{ $vehicle->license }}</option>
+                                <input-label for="id_order" :value="__('Select Vehicle')" />
+                                <select id="id_order" name="id_order" class="block mt-1 w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                                    @foreach (App\Models\detailOrderModel::get() as $detail)
+                                        <option value="{{ $detail->id_order }}">{{ $detail->id_order }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div>
+                                <input-label for="id_order" :value="__('Select Vehicle')" />
+                                <input type="text" name="fuel_usage" class="block mt-1 w-full">
                             </div>
                         </div>
 

@@ -25,9 +25,21 @@ Route::get('/approvals', function () {
     return view('approvals');
 })->name('approvals');
 
-Route::get('/detailItem/{id}', function ($id) {
-    return view('detailItem', ['id' => $id]);
+Route::get('/detailItem', function () {
+    return view('detailItem');
 })->name('detailItem');
+
+Route::get('/detailList', function () {
+    return view('detailList');
+})->name('detailList');
+
+Route::get('/addDetailItem', function () {
+    return view('addDetailItem');
+})->name('addDetailItem');
+
+Route::get('/returnVehicle', function () {
+    return view('returnVehicle');
+})->name('returnVehicle');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -60,7 +72,7 @@ Route::controller(detailOrderController::class)->group(function () {
     Route::get('getDetailId/{id}', 'getDetailId');
     Route::get('getDetailIdOrder/{id}', 'getDetailIdOrder');
     Route::post('addDetail', 'addDetail')->name('add.detail');
-    Route::patch('finishOrder/{id}', 'finishOrder');
+    Route::patch('finishOrder/{id}', 'finishOrder')->name('return.vehicle');
 });
 
 require __DIR__.'/auth.php';
