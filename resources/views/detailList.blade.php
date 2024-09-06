@@ -1,0 +1,35 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('List Details') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-transparent overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    @foreach (App\Models\detailOrderModel::get() as $item)
+                        <div class="" style="padding: 1px">
+                            <div
+                                class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                                <a href="#">
+                                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                        List</h5>
+                                </a>
+                                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Fuel Usage: 
+                                    {{ $item->fuel_usage }}
+                                </p>
+                                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Used at: 
+                                    {{ $item->used_at }}
+                                </p>
+
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>

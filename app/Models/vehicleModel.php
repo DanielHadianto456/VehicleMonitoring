@@ -13,6 +13,7 @@ class vehicleModel extends Model
     public $timestamps = false;
     protected $primaryKey = 'id_vehicle';
     protected $fillable = [
+        'name',
         'license',
         'owner',
         'type',

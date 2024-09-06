@@ -69,6 +69,7 @@ class detailOrderController extends Controller
             if ($check->admin_consent == 'approved' && $check->approver_consent == 'approved') {
                 $validator = Validator::make($req->all(), [
                     'id_order' => 'required',
+                    'fuel_usage' => 'required',
                 ]);
 
                 //If not, then an error message will be shown
@@ -79,6 +80,7 @@ class detailOrderController extends Controller
                 //If input is correct, then the data will be saved
                 $save = detailOrderModel::create([
                     'id_order' => $req->get('id_order'),
+                    'fuel_usage' => $req->get('fuel_usage'),
                     'used_at' => now(),
                 ]);
 
@@ -97,57 +99,57 @@ class detailOrderController extends Controller
     }
 
     //Function used to report in fuel usage and vehicle return
-    public function finishOrder(Request $req, $id)
-    {
+    // public function finishOrder(Request $req, $id)
+    // {
 
-        //Retrieves the current user 
-        $user = Auth::user();
+    //     //Retrieves the current user 
+    //     $user = Auth::user();
 
-        //Checks if current user is admin or not
-        if ($user->role == 'admin') {
+    //     //Checks if current user is admin or not
+    //     if ($user->role == 'admin') {
 
-            //Finds detail that matches with $id provided in the parameter
-            $orderDetail = detailOrderModel::find($id);
+    //         //Finds detail that matches with $id provided in the parameter
+    //         $orderDetail = detailOrderModel::find($id);
 
-            //Finds order that matches with id_order provided from $orderDetail
-            $order = ordersModel::find($orderDetail->id_order);
+    //         //Finds order that matches with id_order provided from $orderDetail
+    //         $order = ordersModel::find($orderDetail->id_order);
 
-            //Validates input for fuel usage
-            $validator = Validator::make($req->all(), [
-                'fuel_usage' => 'required',
-            ]);
+    //         //Validates input for fuel usage
+    //         $validator = Validator::make($req->all(), [
+    //             'fuel_usage' => 'required',
+    //         ]);
 
-            //If not, then an error message will be shown
-            if ($validator->fails()) {
-                return response()->json($validator->errors()->toJson());
-            }
+    //         //If not, then an error message will be shown
+    //         if ($validator->fails()) {
+    //             return response()->json($validator->errors()->toJson());
+    //         }
 
-            //If input is correct, then the data will be updated
-            $orderDetail->update([
-                'returned_at' => now(),
-                'fuel_usage' => $req->get('fuel_usage'),
-            ]);
+    //         //If input is correct, then the data will be updated
+    //         $orderDetail->update([
+    //             'returned_at' => now(),
+    //             'fuel_usage' => $req->get('fuel_usage'),
+    //         ]);
 
-            //driver and vehicle are unassigned
-            vehicleModel::where('id_vehicle', $order->id_vehicle)->update([
-                'status' => 'unassigned',
-            ]);
-            driverModel::where('id_driver', $order->id_driver)->update([
-                'status' => 'unassigned',
-            ]);
+    //         //driver and vehicle are unassigned
+    //         vehicleModel::where('id_vehicle', $order->id_vehicle)->update([
+    //             'status' => 'unassigned',
+    //         ]);
+    //         driverModel::where('id_driver', $order->id_driver)->update([
+    //             'status' => 'unassigned',
+    //         ]);
 
-            //If successful, returns a message
-            //else returns an error
-            if ($orderDetail) {
-                return response()->json(['status' => true, 'message' => 'Success']);
-            } else {
-                return response()->json(['status' => false, 'message' => 'Failed to update']);
-            }
+    //         //If successful, returns a message
+    //         //else returns an error
+    //         if ($orderDetail) {
+    //             return response()->json(['status' => true, 'message' => 'Success']);
+    //         } else {
+    //             return response()->json(['status' => false, 'message' => 'Failed to update']);
+    //         }
 
-        } else {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    }
+    //     } else {
+    //         return response()->json(['message' => 'Unauthorized'], 401);
+    //     }
+    // }
 
 
 }
