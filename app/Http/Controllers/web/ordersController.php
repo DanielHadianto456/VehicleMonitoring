@@ -9,8 +9,6 @@ use App\Models\driverModel;
 use App\Models\vehicleModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\OrdersExport;
 
 class ordersController extends Controller
 {
@@ -110,13 +108,13 @@ class ordersController extends Controller
             //Checks if selected driver or vehicles are currently assigned
             $vehicle = vehicleModel::find($req->get('id_vehicle'));
             $driver = driverModel::find($req->get('id_driver'));
-
+            
             if ($vehicle->status != 'unassigned' || $driver->status != 'unassigned') {
                 return response()->json(['status' => false, 'message' => 'Vehicle or Driver already assigned']);
             } else {
                 //Retrieves selected order data based on primary key
                 $order = ordersModel::find($id);
-
+                
                 //Unassigns current driver and vehicle based on vehicle and driver
                 //id avaliable in the order data through primary key
                 vehicleModel::where('id_vehicle', $order->id_vehicle)->update([
@@ -350,19 +348,18 @@ class ordersController extends Controller
 
         // Checks if both consents are approved or not
         if ($adminConsent == 'approved' && $approverConsent == 'approved') {
-            // If both consents are approved, assign vehicle and driver
+            // Assigns vehicle and driver if both parties approve
             $vehicle->status = 'assigned';
             $driver->status = 'assigned';
-        } 
-        elseif ($adminConsent == 'disapproved' || $approverConsent == 'disapproved') {
-            // If either consent is disapproved, unassign vehicle and driver
+        } elseif ($adminConsent == 'pending' || $approverConsent == 'pending') {
+            // If either consent is pending, retain the current status (do nothing)
+        }
+        elseif ($adminConsent == 'disapproved' && $approverConsent == 'disapproved') {
+            // Unassigns vehicle and driver if there's a dissaproval
             $vehicle->status = 'unassigned';
             $driver->status = 'unassigned';
         } 
-        elseif ($adminConsent == 'pending' || $approverConsent == 'pending') {
-            // If either consent is pending, retain the current status (do nothing)
-            return response()->json(['status' => true, 'message' => 'Consent pending, no status change']);
-        } else {
+        else {
             // Pending or other states can be handled here if needed
         }
 
@@ -370,10 +367,5 @@ class ordersController extends Controller
         $vehicle->save();
         $driver->save();
 
-    }
-
-    public function exportOrdersToExcel()
-    {
-        return Excel::download(new OrdersExport, 'orders.xlsx');
     }
 }
